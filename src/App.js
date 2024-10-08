@@ -1,5 +1,6 @@
 import Big from "./Big";
 import Small from "./Small";
+import Med from "./Med";
 import { Window, WindowHeader, WindowContent, Button } from 'react95';
 import { ThemeProvider } from 'styled-components';
 import original from 'react95/dist/themes/original';
@@ -13,7 +14,10 @@ function App() {
         <div className="hidden lg:block">
           <Big />
         </div>
-        <div className="block lg:hidden">
+        <div className="hidden md:block lg:hidden">
+          <Med />
+        </div>
+        <div className="block md:hidden">
           <Small />
         </div>
       </div>

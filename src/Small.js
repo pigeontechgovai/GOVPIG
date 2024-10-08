@@ -86,7 +86,7 @@ const Small = () => {
             <WindowHeader>
                 CCTV
             </WindowHeader>
-            <WindowContent style={{ width: 400, height: 300, padding: 1 }}>
+            <WindowContent style={{ width: 400*0.7, height: 300*0.7, padding: 1 }}>
                 <div className="relative w-full h-full bg-black overflow-hidden">
                     <div className="absolute inset-0">
                     {isOn ? (

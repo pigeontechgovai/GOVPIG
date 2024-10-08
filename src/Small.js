@@ -102,7 +102,7 @@ const Small = () => {
                 </div>
             </WindowContent>
         </Window>
-        <Toolbar style={{ marginTop: '16px', width: '260px' }}>
+        <Toolbar className="flex justify-center" style={{ marginTop: '16px', width: '260px' }}>
           <Button onClick={() => setIsOn(!isOn)} style={{ marginRight: '16px' }}>
             <Power size={24} />
           </Button>

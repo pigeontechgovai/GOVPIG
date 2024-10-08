@@ -86,7 +86,10 @@ const Small = () => {
         </div>
         <Window>
             <WindowHeader>
+              <div className='flex gap-1 items-center'>
+                <div className="bg-red-600 w-2 h-2 rounded-full animate-pulse" />
                 CCTV
+              </div>
             </WindowHeader>
             <WindowContent style={{ width: 400*0.7, height: 300*0.7, padding: 1 }}>
                 <div className="relative w-full h-full bg-black overflow-hidden">

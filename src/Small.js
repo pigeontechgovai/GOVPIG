@@ -78,7 +78,7 @@ const Small = () => {
 
   return (
     <ThemeProvider theme={original}>
-      <div className="flex flex-col items-center justify-center h-screen bg-[#C0C0C0]">
+      <div className="flex flex-col items-center justify-center h-screen bg-[#C0C0C0] relative">
         <div className="absolute top-2 right-2 text-base">
           {currentTime}
         </div>

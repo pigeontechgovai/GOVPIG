@@ -8,6 +8,7 @@ function App() {
   return (
     <ThemeProvider theme={original}>
       <div className="">
+        <div className="text-center py-1 text-[10px] bg-[#000080] text-white">CA: updating...</div>
         {/* Display Big component on md and up, and Small component on small screens */}
         <div className="hidden lg:block">
           <Big />

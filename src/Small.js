@@ -51,10 +51,17 @@ const Small = () => {
           autoPlay
           muted
           playsInline
+          ref={(video) => {
+            if (video) {
+              video.play().catch((error) => {
+                console.log('Failed to play blur video:', error);
+              });
+            }
+          }}
         />
       );
     }
-
+  
     const channel = channels[currentChannel];
     if (channel.type === 'video') {
       return (
@@ -65,6 +72,13 @@ const Small = () => {
           loop
           muted={isMuted}
           playsInline
+          ref={(video) => {
+            if (video) {
+              video.play().catch((error) => {
+                console.log('Failed to play video:', error);
+              });
+            }
+          }}
         />
       );
     } else if (channel.type === 'image') {
@@ -76,7 +90,7 @@ const Small = () => {
         />
       );
     }
-  };
+  };  
 
   return (
     <ThemeProvider theme={original}>

@@ -50,6 +50,7 @@ const Small = () => {
           src="/blur.mp4"
           autoPlay
           muted
+          playsInline
         />
       );
     }
@@ -63,6 +64,7 @@ const Small = () => {
           autoPlay
           loop
           muted={isMuted}
+          playsInline
         />
       );
     } else if (channel.type === 'image') {

@@ -81,44 +81,46 @@ const Big = () => {
           CCTV
         </div>
 
-        {/* CCTV Grid */}
-        <div className="relative w-[810px] h-[607.5px] bg-transparent">
-          <div className="grid grid-cols-3 gap-2 h-full">
-            {isOn ? (
-              Array.from({ length: 9 }, (_, i) => renderScreen(i))
-            ) : (
-              <div className="col-span-3 w-full h-full bg-black flex items-center justify-center text-white">
-                System Off
-              </div>
-            )}
-          </div>
-        </div>
+        <div className='py-[5%]'>
+            {/* CCTV Grid */}
+            <div className="relative w-[810px] h-[607.5px] bg-transparent">
+            <div className="grid grid-cols-3 gap-2 h-full">
+                {isOn ? (
+                Array.from({ length: 9 }, (_, i) => renderScreen(i))
+                ) : (
+                <div className="col-span-3 w-full h-full bg-black flex items-center justify-center text-white">
+                    System Off
+                </div>
+                )}
+            </div>
+            </div>
 
-        {/* Controls */}
-        <div className='mt-8'>
-            <Window style={{ width: 'auto', marginTop: 16 }}>
-                <WindowHeader>Control</WindowHeader>
-                <WindowContent>
-                    <Toolbar>
-                    <Button onClick={() => setIsOn(!isOn)}>
-                        <Power style={{ marginRight: 4 }} />
-                        {isOn ? 'Power Off' : 'Power On'}
-                    </Button>
-                    <Button onClick={() => changeActiveScreen(-1)}>
-                        <ChevronUp style={{ marginRight: 4 }} />
-                        Previous
-                    </Button>
-                    <Button onClick={() => setIsMuted(!isMuted)}>
-                        {isMuted ? <VolumeX style={{ marginRight: 4 }} /> : <Volume2 style={{ marginRight: 4 }} />}
-                        {isMuted ? 'Unmute' : 'Mute'}
-                    </Button>
-                    <Button onClick={() => changeActiveScreen(1)}>
-                        <ChevronDown style={{ marginRight: 4 }} />
-                        Next
-                    </Button>
-                    </Toolbar>
-                </WindowContent>
-            </Window>
+            {/* Controls */}
+            <div className='mt-8 flex justify-center'>
+                <Window style={{ width: 'auto', marginTop: 16 }}>
+                    <WindowHeader>Control</WindowHeader>
+                    <WindowContent>
+                        <Toolbar>
+                        <Button onClick={() => setIsOn(!isOn)}>
+                            <Power style={{ marginRight: 4 }} />
+                            {isOn ? 'Power Off' : 'Power On'}
+                        </Button>
+                        <Button onClick={() => changeActiveScreen(-1)}>
+                            <ChevronUp style={{ marginRight: 4 }} />
+                            Previous
+                        </Button>
+                        <Button onClick={() => setIsMuted(!isMuted)}>
+                            {isMuted ? <VolumeX style={{ marginRight: 4 }} /> : <Volume2 style={{ marginRight: 4 }} />}
+                            {isMuted ? 'Unmute' : 'Mute'}
+                        </Button>
+                        <Button onClick={() => changeActiveScreen(1)}>
+                            <ChevronDown style={{ marginRight: 4 }} />
+                            Next
+                        </Button>
+                        </Toolbar>
+                    </WindowContent>
+                </Window>
+            </div>
         </div>
       </div>
     </ThemeProvider>

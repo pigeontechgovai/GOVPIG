@@ -173,7 +173,7 @@ const Chatbot = () => {
               <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mb-2`}>
                 <div
                   className={`p-2 rounded-lg text-sm ${
-                    msg.sender === 'user' ? 'bg-blue-200 text-black' : 'bg-gray-200 text-black'
+                    msg.sender === 'user' ? 'bg-black text-white' : 'bg-gray-200 text-black'
                   }`}
                 >
                   <strong>{msg.sender === 'user' ? 'You' : 'GOVAI'}:</strong> {msg.text}
@@ -189,12 +189,20 @@ const Chatbot = () => {
             )}
             <div ref={messagesEndRef} /> {/* Empty div for scrolling */}
           </div>
-          <input
-            type="text"
-            onKeyDown={(e) => e.key === 'Enter' && handleInput(e)}
-            placeholder="Type your message..."
-            className="w-full border rounded p-2 text-sm mt-2 outline-black"
-          />
+          <div className="flex mt-2">
+            <input
+                type="text"
+                onKeyDown={(e) => e.key === 'Enter' && handleInput(e)}
+                placeholder="Type your message..."
+                className="w-full border rounded p-2 text-sm outline-black"
+            />
+            <button
+                onClick={handleInput}
+                className="ml-2 bg-black text-white px-3 py-2 rounded"
+            >
+                Send
+            </button>
+            </div>
         </div>
       )}
 

@@ -8,6 +8,7 @@ import Small from "./Small";
 import Med from "./Med";
 import Home from "./Home";
 import Chatbot from './Chatbot'; // Import the Chatbot component
+import EpsteinTracker from './EpsteinTracker';
 import Marquee from 'react-fast-marquee';
 
 // Set up the modal styles for the phone call
@@ -145,6 +146,10 @@ const App = () => {
           </div>
           <div className="block md:hidden">
             <Small />
+          </div>
+
+          <div className='py-[5%] w-full flex justify-center'>
+            <EpsteinTracker />
           </div>
         </div>
 

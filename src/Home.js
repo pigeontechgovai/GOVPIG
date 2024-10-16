@@ -42,7 +42,7 @@ const Home = () => {
 
       <div className='absolute bottom-5'>
         <Window>
-            <span className='p-1 text-xs md:text-base font-mono'>CA: uploading...</span>
+            <span className='p-1 text-xs md:text-base font-mono'>CA: 4kHu4VktgzpZW9i8LEsHZrNLJcTV98nGhyZE5JSEpump</span>
         </Window>
       </div>
       

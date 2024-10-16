@@ -11,8 +11,8 @@ const EpsteinTracker = () => {
   // Function to get a new random position
   const getNewPosition = (current) => {
     // Calculate new position with larger movements
-    let newTop = current.top + (Math.random() - 0.5) * 30;  // Increased range
-    let newLeft = current.left + (Math.random() - 0.5) * 30;
+    let newTop = current.top + (Math.random() - 0.5) * 10;  // Increased range
+    let newLeft = current.left + (Math.random() - 0.5) * 10;
     
     // Keep within bounds
     newTop = Math.max(5, Math.min(95, newTop));

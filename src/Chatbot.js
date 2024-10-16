@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle } from 'lucide-react'; // Import the chat icon from Lucide
-import Modal from 'react-modal'; // Import Modal for displaying IP address and warning
+import { MessageCircle } from 'lucide-react';
+import Modal from 'react-modal';
 
-// Set up the modal styles
-Modal.setAppElement('#root'); // Ensure you set the app element for accessibility
+Modal.setAppElement('#root'); 
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +11,8 @@ const Chatbot = () => {
   const [userIP, setUserIP] = useState('');
   const [userLocation, setUserLocation] = useState('');
   const [countdown, setCountdown] = useState(4);
-  const [countdownMessage, setCountdownMessage] = useState(''); // State for countdown message
-  const messagesEndRef = useRef(null); // Reference for the messages container
+  const [countdownMessage, setCountdownMessage] = useState('');
+  const messagesEndRef = useRef(null);
 
   const toggleChat = () => {
     setIsOpen((prev) => !prev);
@@ -26,29 +25,26 @@ const Chatbot = () => {
   const handleInput = (event) => {
     const userInput = event.target.value;
     if (userInput) {
-      // Add user message to the chat
       setMessages((prev) => [...prev, { text: userInput, sender: 'user' }]);
-      event.target.value = ''; // Clear input
+      event.target.value = '';
 
-      // Respond with the AI messages
       setMessages((prev) => [
         ...prev,
         { text: 'Enter admin code:', sender: 'ai' },
       ]);
 
-      // Start the countdown
       startCountdown();
     }
   };
 
   const startCountdown = () => {
     let count = countdown;
-    setCountdownMessage(`${count}s remaining..`); // Set initial countdown message
+    setCountdownMessage(`${count}s remaining..`);
 
     const countdownInterval = setInterval(() => {
       count--;
       if (count >= 0) {
-        setCountdownMessage(`${count}s remaining..`); // Update countdown message
+        setCountdownMessage(`${count}s remaining..`);
       } else {
         clearInterval(countdownInterval);
         activateDefenseProtocol();
@@ -61,14 +57,14 @@ const Chatbot = () => {
       ...prev,
       { text: 'Activating defense protocol..', sender: 'ai' },
     ]);
-    setCountdownMessage(''); // Clear countdown message
+    setCountdownMessage('');
 
     setTimeout(() => {
       setMessages((prev) => [
         ...prev,
         { text: 'Locating user..', sender: 'ai' },
       ]);
-      fetchUserIP(); // Fetch user IP address
+      fetchUserIP();
     }, 2000);
   };
 
@@ -77,7 +73,7 @@ const Chatbot = () => {
       const response = await fetch('https://api.ipify.org?format=json');
       const data = await response.json();
       setUserIP(data.ip);
-      fetchUserLocation(data.ip); // Fetch user location based on IP
+      fetchUserLocation(data.ip);
     } catch (error) {
       console.error('Error fetching IP:', error);
     }
@@ -100,7 +96,6 @@ const Chatbot = () => {
     setIsModalOpen(false);
   };
 
-  // Scroll to the bottom whenever messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -116,18 +111,18 @@ const Chatbot = () => {
       right: 'auto',
       bottom: 'auto',
       transform: 'translate(-50%, -50%)',
-      backgroundImage: "url('/b.webp')", // Background image
-      backgroundSize: 'cover', // Ensure the image covers the entire modal
-      backgroundPosition: 'center', // Center the image
-      color: 'white', // Change text color for better contrast
-      padding: '20px', // Add padding for spacing
-      maxWidth: '90%', // Ensure it doesn't overflow the viewport
-      width: '400px', // Set a specific width for the modal
-      borderRadius: '0', // Remove rounded corners
-      border: 'none', // Remove border
+      backgroundImage: "url('/b.webp')", 
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      color: 'white',
+      padding: '20px',
+      maxWidth: '90%',
+      width: '400px',
+      borderRadius: '0',
+      border: 'none',
     },
     overlay: {
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       zIndex: 50,
     },
   };
@@ -139,12 +134,12 @@ const Chatbot = () => {
           onClick={toggleChat}
           className="bg-black text-white p-4 rounded-full shadow-lg focus:outline-none flex items-center justify-center"
         >
-          <MessageCircle size={26} /> {/* Lucide chat icon */}
+          <MessageCircle size={26} />
         </button>
       )}
 
       {isOpen && (
-        <div className="mt-2 w-72 bg-white shadow-lg rounded-lg p-5"> {/* Slightly larger width and padding */}
+        <div className="mt-2 w-72 bg-white shadow-lg rounded-lg p-5">
           <div className="flex justify-between items-center">
             <div className='flex justify-center items-center space-x-2'>
                 <div className="font-mono text-lg">GOVAI</div>
@@ -166,7 +161,7 @@ const Chatbot = () => {
             </button>
           </div>
           <div className="mt-2 overflow-y-auto">
-            <p className="text-sm">PROMPT ME.</p> {/* Slightly larger text */}
+            <p className="text-sm">PROMPT ME.</p>
           </div>
           <div className="my-2 overflow-y-auto h-50 md:h-70">
             {messages.map((msg, index) => (
@@ -180,14 +175,14 @@ const Chatbot = () => {
                 </div>
               </div>
             ))}
-            {countdownMessage && ( // Render the countdown message
+            {countdownMessage && (
               <div className="flex justify-start mb-2">
                 <div className="p-2 rounded-lg text-sm bg-gray-200 text-black text-left">
                   <strong>GOVAI:</strong> {countdownMessage}
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} /> {/* Empty div for scrolling */}
+            <div ref={messagesEndRef} />
           </div>
           <div className="flex mt-2">
             <input
@@ -206,17 +201,16 @@ const Chatbot = () => {
         </div>
       )}
 
-      {/* Modal for displaying user IP and warning */}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="Warning Modal"
-        style={modalStyles} // Apply the custom styles here
+        style={modalStyles}
       >
-        <div className="flex flex-col items-center justify-center"> {/* Center content */}
+        <div className="flex flex-col items-center justify-center">
           <h2 className="text-lg font-bold">AGENTS EN ROUTE</h2>
           <p className="mt-2">User IP Address: {userIP}</p>
-          <p className="mt-2">User Location: {userLocation}</p> {/* Display user location */}
+          <p className="mt-2">User Location: {userLocation}</p>
           <button onClick={closeModal} className="mt-4 bg-white text-black p-2">
             Ignore
           </button>

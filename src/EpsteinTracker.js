@@ -47,7 +47,7 @@ const EpsteinTracker = () => {
 
   return (
     <Window>
-        <div className="relative h-[500px] w-[500px] mx-auto">
+        <div className="relative h-[300px] w-[300px] md:h-[500px] md:w-[500px] mx-auto">
         <img src="/map.png" alt="Map" className="w-full h-full object-cover" />
         
         {/* Live Dot */}

@@ -13,6 +13,7 @@ const Chatbot = () => {
   const [countdown, setCountdown] = useState(4);
   const [countdownMessage, setCountdownMessage] = useState('');
   const messagesEndRef = useRef(null);
+  const [inputValue, setInputValue] = useState('');
 
   const toggleChat = () => {
     setIsOpen((prev) => !prev);
@@ -22,17 +23,16 @@ const Chatbot = () => {
     setIsOpen(false);
   };
 
-  const handleInput = (event) => {
-    const userInput = event.target.value;
-    if (userInput) {
-      setMessages((prev) => [...prev, { text: userInput, sender: 'user' }]);
-      event.target.value = '';
-
+  const handleInput = () => {
+    if (inputValue) {
+      setMessages((prev) => [...prev, { text: inputValue, sender: 'user' }]);
+      setInputValue('');
+  
       setMessages((prev) => [
         ...prev,
         { text: 'Enter admin code:', sender: 'ai' },
       ]);
-
+  
       startCountdown();
     }
   };
@@ -186,16 +186,18 @@ const Chatbot = () => {
           </div>
           <div className="flex mt-2">
             <input
-                type="text"
-                onKeyDown={(e) => e.key === 'Enter' && handleInput(e)}
-                placeholder="Type your message..."
-                className="w-full border rounded p-2 text-sm outline-black"
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleInput()}
+              placeholder="Type your message..."
+              className="w-full border rounded p-2 text-sm outline-black"
             />
             <button
-                onClick={handleInput}
-                className="ml-2 bg-black text-white px-3 py-2 rounded"
+              onClick={handleInput}
+              className="ml-2 bg-black text-white px-3 py-2 rounded"
             >
-                Send
+              Send
             </button>
             </div>
         </div>

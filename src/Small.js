@@ -85,7 +85,7 @@ const Small = () => {
 
   return (
     <ThemeProvider theme={original}>
-      <div className="flex flex-col items-center justify-center h-screen bg-transparent relative">
+      <div className="flex flex-col items-center justify-center h-screen bg-transparent relative overflow-clip">
         <Window>
           <WindowHeader>
             <div className='flex gap-1 items-center' style={{ fontFamily: 'monospace' }}>

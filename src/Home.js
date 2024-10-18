@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Globe from './globe';
-import { Window, WindowHeader, WindowContent, Button, Toolbar } from 'react95';
-import { ThemeProvider } from 'styled-components';
-import original from 'react95/dist/themes/original';
+import { Window } from 'react95';
+import tg from './tg.png';
+import x from './x.jpg';
 
 const TypingText = ({ text, speed = 100 }) => {
   const [displayText, setDisplayText] = useState('');
@@ -29,15 +29,27 @@ const Home = () => {
   return (
     <div className="h-screen w-screen relative flex items-center justify-center">
       <div className="absolute top-4 left-4 z-20">
-        <div className='text-[16px] md:text-3xl'>
+        <div className='text-[16px] md:text-3xl flex md:hidden'>
+            <TypingText text='"Pigeon Tech" v6.9' speed={50} />
+        </div>
+        <div className='text-[16px] md:text-3xl hidden md:flex'>
             <TypingText text='CLASSIFIED: "Pigeon Tech" v6.9' speed={50} />
         </div>
-        <div className='text-base md:text-xl'>
+        <div className='text-base md:text-xl hidden md:flex'>
             <TypingText text="CLASSIFIED: Surveillance Initiative" speed={50} />
         </div>
-        <div className='text-base md:text-xl'>
+        <div className='text-base md:text-xl hidden md:flex'>
             <TypingText text="CLASSIFIED: Solana" speed={50} />
         </div>
+      </div>
+
+      <div className='absolute top-5 right-5 flex justify-center items-center space-x-2'>
+        <a href="https://x.com/pigeontechgovai" className='bg-black rounded-full'>
+          <img src={x} className='size-8 md:size-12 rounded-full border p-2'></img>
+        </a>
+        <a href="https://t.me/+MdDumaNLRblhY2U6" className=''>
+          <img src={tg} className='size-8 md:size-12 rounded-full border'></img>
+        </a>
       </div>
 
       <div className='absolute bottom-5'>

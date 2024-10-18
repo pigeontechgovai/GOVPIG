@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { VolumeX, Volume2, ChevronUp, ChevronDown } from 'lucide-react';
 import { Window, WindowHeader, Button, Toolbar, WindowContent } from 'react95';
 import { ThemeProvider } from 'styled-components';
@@ -16,94 +16,6 @@ const channels = [
   { id: 9, type: 'video', src: 'v7.mp4' },
 ];
 
-const CanvasVideoPlayer = ({ src, muted, onEnded, loop = true }) => {
-  const canvasRef = useRef(null);
-  const videoRef = useRef(null);
-  const animationFrameRef = useRef(null);
-
-  useEffect(() => {
-    const video = document.createElement('video');
-    video.style.display = 'none';
-    video.src = src;
-    video.muted = muted;
-    video.loop = loop;
-    video.playsInline = true;
-    video.crossOrigin = 'anonymous';
-    videoRef.current = video;
-    document.body.appendChild(video);
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-
-    const renderFrame = () => {
-      if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        // Get the video dimensions
-        const videoAspectRatio = video.videoWidth / video.videoHeight;
-        const canvasAspectRatio = canvas.width / canvas.height;
-        
-        let renderWidth = canvas.width;
-        let renderHeight = canvas.height;
-        let offsetX = 0;
-        let offsetY = 0;
-
-        // Calculate dimensions to maintain aspect ratio
-        if (videoAspectRatio > canvasAspectRatio) {
-          renderHeight = canvas.width / videoAspectRatio;
-          offsetY = (canvas.height - renderHeight) / 2;
-        } else {
-          renderWidth = canvas.height * videoAspectRatio;
-          offsetX = (canvas.width - renderWidth) / 2;
-        }
-
-        // Clear canvas and draw video frame
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(video, offsetX, offsetY, renderWidth, renderHeight);
-      }
-      animationFrameRef.current = requestAnimationFrame(renderFrame);
-    };
-
-    const playVideo = async () => {
-      try {
-        await video.play();
-        renderFrame();
-      } catch (error) {
-        console.error('Video play failed:', error);
-      }
-    };
-
-    video.addEventListener('loadedmetadata', playVideo);
-    
-    if (!loop) {
-      video.addEventListener('ended', () => {
-        if (onEnded) onEnded();
-      });
-    }
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      video.pause();
-      video.remove();
-    };
-  }, [src, muted, loop, onEnded]);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="w-full h-full"
-      width={280}
-      height={210}
-      style={{
-        pointerEvents: 'none',
-        touchAction: 'none',
-        backgroundColor: 'black'
-      }}
-    />
-  );
-};
-
 const Small = () => {
   const [currentChannel, setCurrentChannel] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
@@ -116,7 +28,7 @@ const Small = () => {
 
   const handleTerminate = () => {
     setIsPlayingNuke(true);
-    setIsTerminated(false);
+    setIsTerminated(false); // Reset termination state
   };
 
   const handleNukeEnd = () => {
@@ -127,11 +39,13 @@ const Small = () => {
   const renderContent = () => {
     if (isPlayingNuke) {
       return (
-        <CanvasVideoPlayer
+        <video
+          className="w-full h-full object-cover"
           src="nuke.mp4"
-          muted={true}
+          autoPlay
+          muted
           onEnded={handleNukeEnd}
-          loop={false}
+          playsInline
         />
       );
     }
@@ -149,9 +63,13 @@ const Small = () => {
     const channel = channels[currentChannel];
     if (channel.type === 'video') {
       return (
-        <CanvasVideoPlayer
+        <video
+          className="w-full h-full object-cover"
           src={channel.src}
+          autoPlay
+          loop
           muted={isMuted}
+          playsInline
         />
       );
     } else if (channel.type === 'image') {
@@ -160,7 +78,6 @@ const Small = () => {
           className="w-full h-full object-cover"
           src={channel.src}
           alt={`Channel ${channel.id}`}
-          style={{ pointerEvents: 'none' }}
         />
       );
     }
@@ -169,7 +86,7 @@ const Small = () => {
   return (
     <ThemeProvider theme={original}>
       <div className="flex flex-col items-center justify-center h-screen bg-transparent relative overflow-clip">
-        <Window className="select-none">
+        <Window>
           <WindowHeader>
             <div className='flex gap-1 items-center' style={{ fontFamily: 'monospace' }}>
               <div className="bg-red-600 w-2 h-2 rounded-full animate-pulse" />

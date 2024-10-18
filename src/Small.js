@@ -28,7 +28,7 @@ const Small = () => {
 
   const handleTerminate = () => {
     setIsPlayingNuke(true);
-    setIsTerminated(false); // Reset termination state
+    setIsTerminated(false);
   };
 
   const handleNukeEnd = () => {
@@ -46,6 +46,11 @@ const Small = () => {
           muted
           onEnded={handleNukeEnd}
           playsInline
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          x5-video-player-type="h5"
+          x5-video-player-fullscreen="true"
+          controlsList="nodownload"
         />
       );
     }
@@ -70,6 +75,11 @@ const Small = () => {
           loop
           muted={isMuted}
           playsInline
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          x5-video-player-type="h5"
+          x5-video-player-fullscreen="true"
+          controlsList="nodownload"
         />
       );
     } else if (channel.type === 'image') {
@@ -86,9 +96,9 @@ const Small = () => {
   return (
     <ThemeProvider theme={original}>
       <div className="flex flex-col items-center justify-center h-screen bg-transparent relative overflow-clip">
-        <Window>
+        <Window className="select-none">
           <WindowHeader>
-            <div className='flex gap-1 items-center' style={{ fontFamily: 'monospace' }}>
+            <div className="flex gap-1 items-center" style={{ fontFamily: 'monospace' }}>
               <div className="bg-red-600 w-2 h-2 rounded-full animate-pulse" />
               STREAMS
             </div>

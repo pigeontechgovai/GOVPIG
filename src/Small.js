@@ -16,70 +16,91 @@ const channels = [
   { id: 9, type: 'video', src: 'v7.mp4' },
 ];
 
-const VideoPlayer = ({ src, muted, onEnded, loop = true }) => {
+const CanvasVideoPlayer = ({ src, muted, onEnded, loop = true }) => {
+  const canvasRef = useRef(null);
   const videoRef = useRef(null);
+  const animationFrameRef = useRef(null);
 
   useEffect(() => {
+    const video = document.createElement('video');
+    video.style.display = 'none';
+    video.src = src;
+    video.muted = muted;
+    video.loop = loop;
+    video.playsInline = true;
+    video.crossOrigin = 'anonymous';
+    videoRef.current = video;
+    document.body.appendChild(video);
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+
+    const renderFrame = () => {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        // Get the video dimensions
+        const videoAspectRatio = video.videoWidth / video.videoHeight;
+        const canvasAspectRatio = canvas.width / canvas.height;
+        
+        let renderWidth = canvas.width;
+        let renderHeight = canvas.height;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        // Calculate dimensions to maintain aspect ratio
+        if (videoAspectRatio > canvasAspectRatio) {
+          renderHeight = canvas.width / videoAspectRatio;
+          offsetY = (canvas.height - renderHeight) / 2;
+        } else {
+          renderWidth = canvas.height * videoAspectRatio;
+          offsetX = (canvas.width - renderWidth) / 2;
+        }
+
+        // Clear canvas and draw video frame
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, offsetX, offsetY, renderWidth, renderHeight);
+      }
+      animationFrameRef.current = requestAnimationFrame(renderFrame);
+    };
+
     const playVideo = async () => {
       try {
-        if (videoRef.current) {
-          // Set all attributes programmatically
-          videoRef.current.playsInline = true;
-          videoRef.current.setAttribute('webkit-playsinline', 'true');
-          videoRef.current.setAttribute('playsinline', 'true');
-          videoRef.current.setAttribute('x-webkit-airplay', 'allow');
-          videoRef.current.preload = 'auto';
-          
-          // Force low-level playback mode
-          videoRef.current.setAttribute('t7-video-player-type', 'inline');
-          videoRef.current.setAttribute('x5-video-player-type', 'h5-page');
-          videoRef.current.setAttribute('x5-video-orientation', 'portraint');
-          videoRef.current.setAttribute('raw-controls', 'no-fullscreen');
-          videoRef.current.setAttribute('enterkeyhint', 'none');
-          
-          await videoRef.current.play();
-        }
+        await video.play();
+        renderFrame();
       } catch (error) {
         console.error('Video play failed:', error);
       }
     };
 
-    playVideo();
-  }, [src]);
+    video.addEventListener('loadedmetadata', playVideo);
+    
+    if (!loop) {
+      video.addEventListener('ended', () => {
+        if (onEnded) onEnded();
+      });
+    }
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      video.pause();
+      video.remove();
+    };
+  }, [src, muted, loop, onEnded]);
 
   return (
-    <div className="w-full h-full relative bg-black" onClick={(e) => e.preventDefault()}>
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full"
-        style={{
-          objectFit: 'cover',
-          pointerEvents: 'none',
-          touchAction: 'none',
-          userSelect: 'none',
-          WebkitUserSelect: 'none'
-        }}
-        muted={muted}
-        autoPlay
-        loop={loop}
-        playsInline
-        preload="auto"
-        onEnded={onEnded}
-        onTouchStart={(e) => e.preventDefault()}
-        onClick={(e) => e.preventDefault()}
-        playsinline="true"
-        webkit-playsinline="true"
-        x5-playsinline="true"
-        x5-video-player-type="h5-page"
-        x5-video-player-fullscreen="false"
-        raw-controls="no-fullscreen"
-        controlsList="nodownload nofullscreen noremoteplayback"
-        disablePictureInPicture
-        controls={false}
-      >
-        <source src={src} type="video/mp4" />
-      </video>
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="w-full h-full"
+      width={280}
+      height={210}
+      style={{
+        pointerEvents: 'none',
+        touchAction: 'none',
+        backgroundColor: 'black'
+      }}
+    />
   );
 };
 
@@ -88,26 +109,6 @@ const Small = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [isTerminated, setIsTerminated] = useState(false);
   const [isPlayingNuke, setIsPlayingNuke] = useState(false);
-
-  // Prevent all default touch behaviors
-  useEffect(() => {
-    const preventDefaults = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-
-    const options = { passive: false };
-    
-    document.addEventListener('touchstart', preventDefaults, options);
-    document.addEventListener('touchmove', preventDefaults, options);
-    document.addEventListener('touchend', preventDefaults, options);
-
-    return () => {
-      document.removeEventListener('touchstart', preventDefaults);
-      document.removeEventListener('touchmove', preventDefaults);
-      document.removeEventListener('touchend', preventDefaults);
-    };
-  }, []);
 
   const changeChannel = (direction) => {
     setCurrentChannel((prev) => (prev + direction + channels.length) % channels.length);
@@ -126,7 +127,7 @@ const Small = () => {
   const renderContent = () => {
     if (isPlayingNuke) {
       return (
-        <VideoPlayer
+        <CanvasVideoPlayer
           src="nuke.mp4"
           muted={true}
           onEnded={handleNukeEnd}
@@ -148,7 +149,7 @@ const Small = () => {
     const channel = channels[currentChannel];
     if (channel.type === 'video') {
       return (
-        <VideoPlayer
+        <CanvasVideoPlayer
           src={channel.src}
           muted={isMuted}
         />
@@ -167,10 +168,7 @@ const Small = () => {
 
   return (
     <ThemeProvider theme={original}>
-      <div 
-        className="flex flex-col items-center justify-center h-screen bg-transparent relative overflow-clip"
-        style={{ touchAction: 'none' }}
-      >
+      <div className="flex flex-col items-center justify-center h-screen bg-transparent relative overflow-clip">
         <Window className="select-none">
           <WindowHeader>
             <div className='flex gap-1 items-center' style={{ fontFamily: 'monospace' }}>
@@ -178,10 +176,7 @@ const Small = () => {
               STREAMS
             </div>
           </WindowHeader>
-          <WindowContent 
-            style={{ width: 400*0.7, height: 300*0.7, padding: 1 }}
-            onClick={(e) => e.preventDefault()}
-          >
+          <WindowContent style={{ width: 400*0.7, height: 300*0.7, padding: 1 }}>
             <div className="relative w-full h-full bg-black overflow-hidden">
               <div className="absolute inset-0">
                 {renderContent()}

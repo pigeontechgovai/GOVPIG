@@ -16,32 +16,96 @@ const channels = [
   { id: 9, type: 'video', src: 'v7.mp4' },
 ];
 
+const VideoPlayer = ({ src, muted, onEnded, loop = true }) => {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const playVideo = async () => {
+      try {
+        if (videoRef.current) {
+          // Set all attributes programmatically
+          videoRef.current.playsInline = true;
+          videoRef.current.setAttribute('webkit-playsinline', 'true');
+          videoRef.current.setAttribute('playsinline', 'true');
+          videoRef.current.setAttribute('x-webkit-airplay', 'allow');
+          videoRef.current.preload = 'auto';
+          
+          // Force low-level playback mode
+          videoRef.current.setAttribute('t7-video-player-type', 'inline');
+          videoRef.current.setAttribute('x5-video-player-type', 'h5-page');
+          videoRef.current.setAttribute('x5-video-orientation', 'portraint');
+          videoRef.current.setAttribute('raw-controls', 'no-fullscreen');
+          videoRef.current.setAttribute('enterkeyhint', 'none');
+          
+          await videoRef.current.play();
+        }
+      } catch (error) {
+        console.error('Video play failed:', error);
+      }
+    };
+
+    playVideo();
+  }, [src]);
+
+  return (
+    <div className="w-full h-full relative bg-black" onClick={(e) => e.preventDefault()}>
+      <video
+        ref={videoRef}
+        className="absolute inset-0 w-full h-full"
+        style={{
+          objectFit: 'cover',
+          pointerEvents: 'none',
+          touchAction: 'none',
+          userSelect: 'none',
+          WebkitUserSelect: 'none'
+        }}
+        muted={muted}
+        autoPlay
+        loop={loop}
+        playsInline
+        preload="auto"
+        onEnded={onEnded}
+        onTouchStart={(e) => e.preventDefault()}
+        onClick={(e) => e.preventDefault()}
+        playsinline="true"
+        webkit-playsinline="true"
+        x5-playsinline="true"
+        x5-video-player-type="h5-page"
+        x5-video-player-fullscreen="false"
+        raw-controls="no-fullscreen"
+        controlsList="nodownload nofullscreen noremoteplayback"
+        disablePictureInPicture
+        controls={false}
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+    </div>
+  );
+};
+
 const Small = () => {
   const [currentChannel, setCurrentChannel] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isTerminated, setIsTerminated] = useState(false);
   const [isPlayingNuke, setIsPlayingNuke] = useState(false);
-  const videoRef = useRef(null);
 
-  // Force video playback settings on mount and channel change
+  // Prevent all default touch behaviors
   useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      video.setAttribute('playsinline', 'true');
-      video.setAttribute('webkit-playsinline', 'true');
-      video.play().catch(error => console.log('Play failed:', error));
-    }
-  }, [currentChannel, isPlayingNuke]);
-
-  // Prevent default touch behavior
-  useEffect(() => {
-    const preventDefaultTouch = (e) => {
+    const preventDefaults = (e) => {
       e.preventDefault();
+      e.stopPropagation();
     };
 
-    document.addEventListener('touchstart', preventDefaultTouch, { passive: false });
+    const options = { passive: false };
+    
+    document.addEventListener('touchstart', preventDefaults, options);
+    document.addEventListener('touchmove', preventDefaults, options);
+    document.addEventListener('touchend', preventDefaults, options);
+
     return () => {
-      document.removeEventListener('touchstart', preventDefaultTouch);
+      document.removeEventListener('touchstart', preventDefaults);
+      document.removeEventListener('touchmove', preventDefaults);
+      document.removeEventListener('touchend', preventDefaults);
     };
   }, []);
 
@@ -62,29 +126,12 @@ const Small = () => {
   const renderContent = () => {
     if (isPlayingNuke) {
       return (
-        <div className="w-full h-full relative">
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            src="nuke.mp4"
-            autoPlay
-            muted
-            onEnded={handleNukeEnd}
-            playsInline={true}
-            webkit-playsinline="true"
-            x5-playsinline="true"
-            x5-video-player-type="h5"
-            x5-video-player-fullscreen="false"
-            controlsList="nodownload nofullscreen noremoteplayback"
-            disablePictureInPicture
-            controls={false}
-            style={{
-              pointerEvents: 'none',
-              touchAction: 'none',
-              objectFit: 'cover'
-            }}
-          />
-        </div>
+        <VideoPlayer
+          src="nuke.mp4"
+          muted={true}
+          onEnded={handleNukeEnd}
+          loop={false}
+        />
       );
     }
 
@@ -101,29 +148,10 @@ const Small = () => {
     const channel = channels[currentChannel];
     if (channel.type === 'video') {
       return (
-        <div className="w-full h-full relative">
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            src={channel.src}
-            autoPlay
-            loop
-            muted={isMuted}
-            playsInline={true}
-            webkit-playsinline="true"
-            x5-playsinline="true"
-            x5-video-player-type="h5"
-            x5-video-player-fullscreen="false"
-            controlsList="nodownload nofullscreen noremoteplayback"
-            disablePictureInPicture
-            controls={false}
-            style={{
-              pointerEvents: 'none',
-              touchAction: 'none',
-              objectFit: 'cover'
-            }}
-          />
-        </div>
+        <VideoPlayer
+          src={channel.src}
+          muted={isMuted}
+        />
       );
     } else if (channel.type === 'image') {
       return (
@@ -150,7 +178,10 @@ const Small = () => {
               STREAMS
             </div>
           </WindowHeader>
-          <WindowContent style={{ width: 400*0.7, height: 300*0.7, padding: 1 }}>
+          <WindowContent 
+            style={{ width: 400*0.7, height: 300*0.7, padding: 1 }}
+            onClick={(e) => e.preventDefault()}
+          >
             <div className="relative w-full h-full bg-black overflow-hidden">
               <div className="absolute inset-0">
                 {renderContent()}

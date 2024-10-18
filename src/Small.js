@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { VolumeX, Volume2, ChevronUp, ChevronDown } from 'lucide-react';
 import { Window, WindowHeader, Button, Toolbar, WindowContent } from 'react95';
 import { ThemeProvider } from 'styled-components';
@@ -21,6 +21,29 @@ const Small = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [isTerminated, setIsTerminated] = useState(false);
   const [isPlayingNuke, setIsPlayingNuke] = useState(false);
+  const videoRef = useRef(null);
+
+  // Force video playback settings on mount and channel change
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('webkit-playsinline', 'true');
+      video.play().catch(error => console.log('Play failed:', error));
+    }
+  }, [currentChannel, isPlayingNuke]);
+
+  // Prevent default touch behavior
+  useEffect(() => {
+    const preventDefaultTouch = (e) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener('touchstart', preventDefaultTouch, { passive: false });
+    return () => {
+      document.removeEventListener('touchstart', preventDefaultTouch);
+    };
+  }, []);
 
   const changeChannel = (direction) => {
     setCurrentChannel((prev) => (prev + direction + channels.length) % channels.length);
@@ -39,19 +62,29 @@ const Small = () => {
   const renderContent = () => {
     if (isPlayingNuke) {
       return (
-        <video
-          className="w-full h-full object-cover"
-          src="nuke.mp4"
-          autoPlay
-          muted
-          onEnded={handleNukeEnd}
-          playsInline
-          webkit-playsinline="true"
-          x5-playsinline="true"
-          x5-video-player-type="h5"
-          x5-video-player-fullscreen="true"
-          controlsList="nodownload"
-        />
+        <div className="w-full h-full relative">
+          <video
+            ref={videoRef}
+            className="absolute inset-0 w-full h-full object-cover"
+            src="nuke.mp4"
+            autoPlay
+            muted
+            onEnded={handleNukeEnd}
+            playsInline={true}
+            webkit-playsinline="true"
+            x5-playsinline="true"
+            x5-video-player-type="h5"
+            x5-video-player-fullscreen="false"
+            controlsList="nodownload nofullscreen noremoteplayback"
+            disablePictureInPicture
+            controls={false}
+            style={{
+              pointerEvents: 'none',
+              touchAction: 'none',
+              objectFit: 'cover'
+            }}
+          />
+        </div>
       );
     }
 
@@ -68,19 +101,29 @@ const Small = () => {
     const channel = channels[currentChannel];
     if (channel.type === 'video') {
       return (
-        <video
-          className="w-full h-full object-cover"
-          src={channel.src}
-          autoPlay
-          loop
-          muted={isMuted}
-          playsInline
-          webkit-playsinline="true"
-          x5-playsinline="true"
-          x5-video-player-type="h5"
-          x5-video-player-fullscreen="true"
-          controlsList="nodownload"
-        />
+        <div className="w-full h-full relative">
+          <video
+            ref={videoRef}
+            className="absolute inset-0 w-full h-full object-cover"
+            src={channel.src}
+            autoPlay
+            loop
+            muted={isMuted}
+            playsInline={true}
+            webkit-playsinline="true"
+            x5-playsinline="true"
+            x5-video-player-type="h5"
+            x5-video-player-fullscreen="false"
+            controlsList="nodownload nofullscreen noremoteplayback"
+            disablePictureInPicture
+            controls={false}
+            style={{
+              pointerEvents: 'none',
+              touchAction: 'none',
+              objectFit: 'cover'
+            }}
+          />
+        </div>
       );
     } else if (channel.type === 'image') {
       return (
@@ -88,6 +131,7 @@ const Small = () => {
           className="w-full h-full object-cover"
           src={channel.src}
           alt={`Channel ${channel.id}`}
+          style={{ pointerEvents: 'none' }}
         />
       );
     }
@@ -95,10 +139,13 @@ const Small = () => {
 
   return (
     <ThemeProvider theme={original}>
-      <div className="flex flex-col items-center justify-center h-screen bg-transparent relative overflow-clip">
+      <div 
+        className="flex flex-col items-center justify-center h-screen bg-transparent relative overflow-clip"
+        style={{ touchAction: 'none' }}
+      >
         <Window className="select-none">
           <WindowHeader>
-            <div className="flex gap-1 items-center" style={{ fontFamily: 'monospace' }}>
+            <div className='flex gap-1 items-center' style={{ fontFamily: 'monospace' }}>
               <div className="bg-red-600 w-2 h-2 rounded-full animate-pulse" />
               STREAMS
             </div>

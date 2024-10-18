@@ -42,6 +42,9 @@ const Home = () => {
         <div className='text-[16px] md:text-3xl flex md:hidden'>
             <TypingText text='"Pigeon Tech" v6.9' speed={50} />
         </div>
+        <div className='text-[16px] md:text-3xl flex md:hidden'>
+            <TypingText text="Birds aren't real" speed={50} />
+        </div>
         <div className='text-[16px] md:text-3xl hidden md:flex'>
             <TypingText text='CLASSIFIED: "Pigeon Tech" v6.9' speed={50} />
         </div>

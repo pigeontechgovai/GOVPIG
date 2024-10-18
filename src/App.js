@@ -64,7 +64,7 @@ const App = () => {
       width: '300px',
       height: '400px',
       border: 'none',
-      borderRadius: 'none',
+      borderRadius: '16px',
       padding: '0',
       overflow: 'clip',
     },
@@ -75,8 +75,8 @@ const App = () => {
   };
 
   const ringMotion = {
-    x: [-2, 2, -2],
-    transition: { duration: 0.5, repeat: Infinity, ease: "easeInOut" },
+    x: [-1, 1, -1],
+    transition: { duration: 0.3, repeat: Infinity, ease: "easeInOut" },
   };
 
   return (

@@ -102,7 +102,7 @@ export default function Globe({ className, config = GLOBE_CONFIG }) {
   return (
     <div
       className={cn(
-        "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto aspect-[1/1] w-[455px] md:w-[725px] opacity-70",
+        "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto aspect-[1/1] w-[455px] md:w-[725px] opacity-60",
         className
       )}
     >

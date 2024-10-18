@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion'; // Import framer-motion
+import { motion } from 'framer-motion';
 import Modal from 'react-modal';
 import { ThemeProvider } from 'styled-components';
 import original from 'react95/dist/themes/original';
@@ -7,59 +7,49 @@ import Big from "./Big";
 import Small from "./Small";
 import Med from "./Med";
 import Home from "./Home";
-import Chatbot from './Chatbot'; // Import the Chatbot component
+import Chatbot from './Chatbot';
 import EpsteinTracker from './EpsteinTracker';
 import Marquee from 'react-fast-marquee';
 
-// Set up the modal styles for the phone call
 Modal.setAppElement('#root');
 
 const App = () => {
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
-  const [isOnCall, setIsOnCall] = useState(false); // State to track if user is on the call
-  const [hasCalled, setHasCalled] = useState(false); // State to track if the call has been triggered once
-  const [audio] = useState(new Audio('/mike1.mp3')); // Audio object for playing mike.mp3
+  const [isOnCall, setIsOnCall] = useState(false);
+  const [hasCalled, setHasCalled] = useState(false);
+  const [audio] = useState(new Audio('/mike1.mp3'));
 
-  // Show the "Big Mike is calling" modal 4 seconds after the page loads, only once
   useEffect(() => {
     if (!hasCalled) {
       const timer = setTimeout(() => {
         setIsCallModalOpen(true);
-        setHasCalled(true); // Ensure the call only happens once
-      }, 3500); // 4 seconds delay
+        setHasCalled(true);
+      }, 3500);
 
-      return () => clearTimeout(timer); // Cleanup the timer when the component unmounts
+      return () => clearTimeout(timer);
     }
   }, [hasCalled]);
 
   const closeModal = () => {
     setIsCallModalOpen(false);
-    setIsOnCall(false); // Reset the call status when modal closes
+    setIsOnCall(false);
   };
 
   const acceptCall = () => {
-    // Play mike.mp3 when call is accepted
     audio.play();
-
-    // Set the call status to "on call"
     setIsOnCall(true);
-
-    // Ensure modal is centered when on call (reset animation position)
     setTimeout(() => {
-      setIsCallModalOpen(true); // Keep the modal open but change content to "on call"
+      setIsCallModalOpen(true);
     }, 50);
 
-    // Close the modal when audio finishes
     audio.onended = () => {
-      setIsCallModalOpen(false); // Close the modal after the audio ends
-      setIsOnCall(false); // Reset the call state
+      setIsCallModalOpen(false);
+      setIsOnCall(false);
     };
   };
 
   const declineCall = () => {
-    // Handle the logic for declining the call
-    console.log("Call declined!");
-    setIsCallModalOpen(false); // Close the modal
+    setIsCallModalOpen(false);
   };
 
   const callModalStyles = {
@@ -84,18 +74,16 @@ const App = () => {
     },
   };
 
-  // Define the ring motion as just moving the modal left and right
   const ringMotion = {
-    x: [-2, 2, -2], // Move the modal back and forth on the x-axis
+    x: [-2, 2, -2],
     transition: { duration: 0.5, repeat: Infinity, ease: "easeInOut" },
   };
 
   return (
     <ThemeProvider theme={original}>
-      <div className="relative min-h-screen">
-        {/* Background video */}
+      <div className="relative min-h-screen w-screen overflow-x-hidden">
         <video
-          className="sticky top-0 left-0 w-[100dvw] h-[100dvh] object-cover"
+          className="fixed top-0 left-0 w-full h-full object-cover"
           style={{ zIndex: -1 }}
           src="bg.mp4"
           autoPlay
@@ -103,73 +91,54 @@ const App = () => {
           muted
           playsInline
         />
-        <div className='absolute inset-0 h-full w-full bg-black opacity-30'></div>
+        <div className="absolute inset-0 h-full w-full bg-black opacity-20" />
 
-        {/* Content overlay */}
-        <div className="absolute inset-0 overflow-y-auto">
-          <div className="">
+        <div className="relative w-full overflow-x-hidden">
+          <div className="w-full">
             <Home />
           </div>
 
-          <div className='py-[5%]'>
-            <Marquee speed={70} loop={0}> {/* 'loop={0}' creates an infinite loop */}
-              <div className='flex justify-center items-center text-3xl font-mono text-white'>
-                GOVAI | Surveillance Initiative <img src="gif.gif" className='h-20' />
-              </div>
-              <div className='flex justify-center items-center text-3xl font-mono text-white'>
-                GOVAI | Surveillance Initiative <img src="gif.gif" className='h-20' />
-              </div>
-              <div className='flex justify-center items-center text-3xl font-mono text-white'>
-                GOVAI | Surveillance Initiative <img src="gif.gif" className='h-20' />
-              </div>
-              <div className='flex justify-center items-center text-3xl font-mono text-white'>
-                GOVAI | Surveillance Initiative <img src="gif.gif" className='h-20' />
-              </div>
-              <div className='flex justify-center items-center text-3xl font-mono text-white'>
-                GOVAI | Surveillance Initiative <img src="gif.gif" className='h-20' />
-              </div>
-              <div className='flex justify-center items-center text-3xl font-mono text-white'>
-                GOVAI | Surveillance Initiative <img src="gif.gif" className='h-20' />
-              </div>
-              <div className='flex justify-center items-center text-3xl font-mono text-white'>
-                GOVAI | Surveillance Initiative <img src="gif.gif" className='h-20' />
+          <div className="w-full">
+            <Marquee speed={70} loop={0} className="w-full">
+              <div className="flex items-center space-x-4">
+                {[...Array(7)].map((_, i) => (
+                  <div key={i} className="flex items-center space-x-2 text-3xl font-mono text-white whitespace-nowrap">
+                    <span>GOVAI | Surveillance Initiative</span>
+                    <img src="gif.gif" className="h-20" alt="surveillance" />
+                  </div>
+                ))}
               </div>
             </Marquee>
           </div>
 
-          {/* Display Big component on large screens, Med on medium screens, and Small on small screens */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block w-full">
             <Big />
           </div>
-          <div className="hidden md:block lg:hidden">
+          <div className="hidden md:block lg:hidden w-full">
             <Med />
           </div>
-          <div className="block md:hidden">
+          <div className="block md:hidden w-full">
             <Small />
           </div>
 
-          <div className='py-[5%] w-full flex justify-center'>
+          <div className="w-full flex justify-center py-[5%]">
             <EpsteinTracker />
           </div>
         </div>
 
-        {/* Include the Chatbot component */}
         <Chatbot />
 
-        {/* Modal for the "Big Mike" call */}
         <Modal
           isOpen={isCallModalOpen}
           onRequestClose={closeModal}
           contentLabel="Big Mike is Calling"
           style={callModalStyles}
         >
-          {/* Apply the ring motion to the whole modal only if not on call */}
           <motion.div
-            className="w-full h-full flex flex-col items-center justify-center overflow-clip"
-            animate={!isOnCall ? ringMotion : { x: 0 }} // Reset modal position when on call
+            className="w-full h-full flex flex-col items-center justify-center"
+            animate={!isOnCall ? ringMotion : { x: 0 }}
           >
             {isOnCall ? (
-              // UI when the user is on the call
               <>
                 <img src="/mike.png" alt="Big Mike" className="size-32 rounded-full mb-4" />
                 <h2 className="text-white text-lg font-bold mb-2">On Call with Big Mike</h2>
@@ -181,7 +150,6 @@ const App = () => {
                 </button>
               </>
             ) : (
-              // UI when the call is ringing
               <>
                 <img src="/mike.png" alt="Big Mike" className="size-32 rounded-full mb-4" />
                 <h2 className="text-white text-lg font-bold mb-2">Big Mike</h2>

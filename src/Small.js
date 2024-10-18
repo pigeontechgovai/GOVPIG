@@ -5,16 +5,17 @@ import { ThemeProvider } from 'styled-components';
 import original from 'react95/dist/themes/original';
 
 const channels = [
-  { id: 1, type: 'video', src: 'v1.mp4' },
-  { id: 2, type: 'video', src: 'v2.mp4' },
-  { id: 3, type: 'video', src: 'v3.mp4' },
-  { id: 4, type: 'video', src: 'v4.mp4' },
-  { id: 5, type: 'video', src: 'v.mp4' },
-  { id: 6, type: 'video', src: 'v5.mp4' },
-  { id: 7, type: 'video', src: 'v6.mp4' },
-  { id: 8, type: 'video', src: 'v8.mp4' },
-  { id: 9, type: 'video', src: 'v7.mp4' },
+  { id: 1, type: 'image', src: 'v1.png' },
+  { id: 2, type: 'image', src: 'v2.png' },
+  { id: 3, type: 'image', src: 'v3.png' },
+  { id: 4, type: 'image', src: 'v4.png' },
+  { id: 5, type: 'image', src: 'v5.png' },
+  { id: 6, type: 'image', src: 'v6.png' },
+  { id: 7, type: 'image', src: 'v7.png' },
+  { id: 8, type: 'image', src: 'v8.png' },
+  { id: 9, type: 'image', src: 'v.png' },
 ];
+
 
 const Small = () => {
   const [currentChannel, setCurrentChannel] = useState(0);

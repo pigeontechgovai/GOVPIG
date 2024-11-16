@@ -63,7 +63,7 @@ const Home = () => {
         <a href="https://www.dextools.io/app/en/solana/pair-explorer/Ac8B94B5y4agdcG7rYAEv5BwxjKbYnF1szTpcJY1g7No" className='bg-zinc-400 rounded-full'>
           <img src="dt.svg" className='size-8 md:size-12 rounded-full border p-1'></img>
         </a>
-        <a href="https://x.com/pigeontechgovai" className='bg-black rounded-full'>
+        <a href="https://x.com/govaionsol" className='bg-black rounded-full'>
           <img src={x} className='size-8 md:size-12 rounded-full border p-1'></img>
         </a>
         <a href="https://t.me/+MdDumaNLRblhY2U6" className=''>
